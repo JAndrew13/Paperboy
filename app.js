@@ -5,20 +5,32 @@ const app = express();
 const port = 3000;
 
 // =========== Paperboy Configuration ============ //
-const interval = "1m";
+
 const wallet = {
   cash: 1000,  // set wallet balance
   tokens: 0   // token balance
 };
 const rate = {
-  buy: .5,    // percent of cash to spend on action
-  sell: .5    // percent of tokens to sell on action
+  buy: 1,    // percent of cash to spend on action
+  sell: 1    // percent of tokens to sell on action
 };
-const lastPrice = 0
+
+const accountValue = "-";
+const lastPrice = 0;
+var pageReport = {
+  Cash: wallet.cash,
+  Tokens: wallet.tokens,
+  AccoutValue: accountValue
+}
 
 // ============== Server Functions =============== //
 
 app.use(express.json()); // allow app to receive JSON Data
+
+app.get("/test", function(req, res){
+
+  res.send(pageReport);
+});
 
 app.post('/alert', (req, res) => {
   console.log("");
@@ -37,6 +49,7 @@ app.post('/alert', (req, res) => {
 });
 
 // ============= PaperBoy functions ============== //
+
 function paperBoy(alert, wallet, rate){
   console.log("");
   console.log("~= PaperBoy =~");
@@ -60,6 +73,7 @@ function paperBoy(alert, wallet, rate){
       wallet.tokens -= orderAmount;
   }
   console.log("Order Complete!");
+  const lastPrice = alert.price;
   report(wallet, alert.price);
   console.log("~= PaperBoy =~");
   console.log("");
@@ -73,6 +87,9 @@ function report(wallet, lastPrice){
   console.log("");
   console.log("Account Value:")
   console.log("$"+ (wallet.cash + (wallet.tokens * lastPrice)));
+  accoutnValue = console.log("$"+ (wallet.cash + (wallet.tokens * lastPrice)));
+  return accountValue
+
 };
 
 // ============================================ //
